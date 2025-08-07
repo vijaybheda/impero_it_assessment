@@ -46,12 +46,21 @@ class NetworkUtils {
 
   static Map<String, dynamic> handleResponse(http.Response response) {
     final statusCode = response.statusCode;
-    final Map<String, dynamic> json = jsonDecode(response.body);
+    
+    try {
+      final Map<String, dynamic> json = jsonDecode(response.body);
 
-    if (statusCode >= 200 && statusCode < 300) {
-      return json;
-    } else {
-      throw NetworkException(statusCode: statusCode, message: json['message'] ?? 'Unknown error');
+      if (statusCode >= 200 && statusCode < 300) {
+        return json;
+      } else {
+        throw NetworkException(statusCode: statusCode, message: json['message'] ?? 'Unknown error');
+      }
+    } catch (e) {
+      // Handle JSON decode errors
+      throw NetworkException(
+        statusCode: statusCode, 
+        message: 'Invalid response format: ${e.toString()}'
+      );
     }
   }
 }

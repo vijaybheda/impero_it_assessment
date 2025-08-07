@@ -12,6 +12,11 @@ class ApiClient {
   /// HTTP client instance for making network requests
   final http.Client _client = http.Client();
 
+  /// Disposes the HTTP client to prevent memory leaks
+  void dispose() {
+    _client.close();
+  }
+
   /// Makes a POST request to the specified endpoint
   ///
   /// Parameters:

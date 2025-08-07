@@ -212,8 +212,22 @@ class DesignStripScreen extends StatelessWidget {
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[0-9.]'))],
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
+                  LengthLimitingTextInputFormatter(10), // Limit input length
+                ],
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 onChanged: (value) {
+                  // Validate input before processing
+                  if (value.isEmpty) return;
+                  
+                  // Check if value is a valid number
+                  final double? numericValue = double.tryParse(value);
+                  if (numericValue == null) return;
+                  
+                  // Limit to reasonable range (0-10000)
+                  if (numericValue < 0 || numericValue > 10000) return;
+                  
                   controller.updateColorFromValue(index, value, colors);
                 },
               ),
